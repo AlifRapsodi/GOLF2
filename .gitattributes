@@ -1,0 +1,8 @@
+src/small/optimizer.pt filter=lfs diff=lfs merge=lfs -text
+src/base/optimizer.pt filter=lfs diff=lfs merge=lfs -text
+src/tiny/optimizer.pt filter=lfs diff=lfs merge=lfs -text
+src/small/pytorch_model.bin filter=lfs diff=lfs merge=lfs -text
+src/base/pytorch_model.bin filter=lfs diff=lfs merge=lfs -text
+src/tiny/pytorch_model.bin filter=lfs diff=lfs merge=lfs -text
+*.bin filter=lfs diff=lfs merge=lfs -text
+*.pt filter=lfs diff=lfs merge=lfs -text
