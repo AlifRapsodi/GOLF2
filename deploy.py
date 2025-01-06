@@ -247,7 +247,7 @@ def load_model(model_path):
     ])
     labels = ["Address", "Toe-up", "Mid-backswing", "Top",
               "Impact", "Mid-follow-through", "Finish"]
-    model = ViTForImageClassification.from_pretrained(model_path, num_labels = len(labels))
+    model = ViTForImageClassification.from_pretrained(model_path)
     return feature_extractor, model, labels
 
 feature_extractor, model, labels = load_model(model_path)
