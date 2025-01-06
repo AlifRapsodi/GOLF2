@@ -231,11 +231,11 @@ display_main_title()
 
 model_select = st.selectbox("Select a model", ["Tiny", "Small", "Base"])
 if model_select == "Tiny":
-    model_path = r"E:\\rapsodi\\Tiny-result\\checkpoint-4800"
+    model_path = r"src/tiny"
 elif model_select == "Small":
-    model_path = r"E:\\rapsodi\\Tiny-result\\checkpoint-4800"
+    model_path = r"src/small"
 elif model_select == "Base":
-    model_path = r"E:\\rapsodi\\Tiny-result\\checkpoint-4800"
+    model_path = r"src/base"
 
 # Load Model and Labels
 @st.cache_resource
