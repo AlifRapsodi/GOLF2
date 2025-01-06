@@ -20,23 +20,46 @@ st.markdown("""
     <style>
     .main {
         padding: 2rem;
+        background-color: #f8f9fa;
     }
     .stButton>button {
         width: 100%;
-        background-color: #4CAF50;
+        background-color: #6c5ce7;
         color: white;
-        padding: 0.5rem;
-        border-radius: 5px;
+        padding: 0.75rem;
+        border-radius: 10px;
         border: none;
+        font-size: 1rem;
+        font-weight: bold;
+        transition: background-color 0.3s ease;
     }
     .stButton>button:hover {
-        background-color: #45a049;
+        background-color: #5a4fcf;
     }
     .prediction-box {
-        padding: 1rem;
-        border-radius: 5px;
-        background-color: #f0f2f6;
+        padding: 1.5rem;
+        border-radius: 10px;
+        background-color: #ffffff;
         margin: 1rem 0;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+    .stSelectbox>div>div>div>div {
+        background-color: #ffffff;
+        border-radius: 10px;
+        padding: 0.5rem;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+    .stFileUploader>div>div>div>div {
+        background-color: #ffffff;
+        border-radius: 10px;
+        padding: 0.5rem;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+    .stMarkdown h3 {
+        color: #6c5ce7;
+    }
+    .stMarkdown p {
+        color: #333333;
     }
     </style>
     """, unsafe_allow_html=True)
@@ -93,7 +116,7 @@ def plot_confidence_scores(confidence_scores):
         x=confidence_scores * 100,  # Convert to percentage
         y=labels,
         orientation='h',
-        marker_color='rgba(76, 175, 80, 0.6)',
+        marker_color='rgba(108, 92, 231, 0.6)',
         text=[f'{score:.1f}%' for score in confidence_scores * 100],
         textposition='auto',
     ))
@@ -160,7 +183,7 @@ def main():
                         st.markdown("### Classification Results")
                         st.markdown(f"""
                         <div class="prediction-box">
-                            <h3 style='color: #4CAF50;'>Predicted Phase: {labels[predicted_class]}</h3>
+                            <h3 style='color: #6c5ce7;'>Predicted Phase: {labels[predicted_class]}</h3>
                             <p>Confidence: {confidence_scores[predicted_class]*100:.1f}%</p>
                             <p>Analyzed on: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}</p>
                         </div>
