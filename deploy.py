@@ -15,108 +15,94 @@ st.set_page_config(
     layout="wide"
 )
 
-# Custom CSS to improve appearance
+# Custom CSS with modern pink-purple theme
 st.markdown("""
     <style>
     .main {
         padding: 2rem;
-        background-color: #f8f9fa;
+        background-color: #faf5ff;
     }
     .stButton>button {
         width: 100%;
-        background-color: #6c5ce7;
+        background: linear-gradient(135deg, #e879f9 0%, #c084fc 100%);
         color: white;
         padding: 0.75rem;
-        border-radius: 10px;
+        border-radius: 15px;
         border: none;
         font-size: 1rem;
-        font-weight: bold;
-        transition: background-color 0.3s ease;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 6px rgba(192, 132, 252, 0.2);
     }
     .stButton>button:hover {
-        background-color: #5a4fcf;
+        transform: translateY(-2px);
+        box-shadow: 0 6px 8px rgba(192, 132, 252, 0.3);
+        background: linear-gradient(135deg, #d946ef 0%, #a855f7 100%);
     }
     .prediction-box {
-        padding: 1.5rem;
-        border-radius: 10px;
-        background-color: #ffffff;
-        margin: 1rem 0;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        padding: 2rem;
+        border-radius: 20px;
+        background: rgba(255, 255, 255, 0.9);
+        margin: 1.5rem 0;
+        box-shadow: 0 8px 16px rgba(192, 132, 252, 0.15);
+        border: 1px solid rgba(192, 132, 252, 0.1);
+        backdrop-filter: blur(12px);
     }
     .stSelectbox>div>div>div>div {
-        background-color: #ffffff;
-        border-radius: 10px;
+        background-color: white;
+        border-radius: 15px;
         padding: 0.5rem;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        border: 1px solid rgba(192, 132, 252, 0.2);
+        box-shadow: 0 4px 6px rgba(192, 132, 252, 0.1);
     }
     .stFileUploader>div>div>div>div {
-        background-color: #ffffff;
-        border-radius: 10px;
-        padding: 0.5rem;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        background-color: white;
+        border-radius: 15px;
+        padding: 1rem;
+        border: 2px dashed rgba(192, 132, 252, 0.3);
+        transition: all 0.3s ease;
+    }
+    .stFileUploader>div>div>div>div:hover {
+        border-color: #c084fc;
+        background-color: rgba(192, 132, 252, 0.05);
+    }
+    .stMarkdown h1 {
+        color: #9333ea;
+        font-weight: 800;
+        margin-bottom: 1.5rem;
     }
     .stMarkdown h3 {
-        color: #6c5ce7;
+        color: #a855f7;
+        font-weight: 600;
+        margin: 1rem 0;
     }
     .stMarkdown p {
-        color: #333333;
+        color: #4b5563;
+        line-height: 1.6;
     }
     .stImage>img {
-        border-radius: 10px;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        border-radius: 20px;
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+        border: 1px solid rgba(192, 132, 252, 0.1);
     }
     .stPlotlyChart {
-        border-radius: 10px;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        border-radius: 20px;
+        background: white;
+        padding: 1rem;
+        box-shadow: 0 8px 16px rgba(192, 132, 252, 0.15);
+        border: 1px solid rgba(192, 132, 252, 0.1);
+    }
+    div[data-testid="stHeader"] {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(10px);
+    }
+    .stApp {
+        background: linear-gradient(135deg, #fdf4ff 0%, #faf5ff 100%);
     }
     </style>
     """, unsafe_allow_html=True)
 
-# Set random seeds for reproducibility
-torch.manual_seed(42)
-np.random.seed(42)
-random.seed(42)
-
-# Define labels
-labels = ["Address", "Toe-up", "Mid-backswing", "Top", "Impact", "Mid-follow-through", "Finish"]
-
-# Load ViT model based on user selection
-model_paths = {
-    "Base": r"src/base",
-    "Tiny": r"src/tiny",
-    "Small": r"src/small"
-}
-
-# Define transform for single image
-transform = transforms.Compose([
-    transforms.Resize((224, 224)),
-    transforms.ToTensor(),
-    transforms.Normalize(mean=[0.5, 0.5, 0.5], std=[0.5, 0.5, 0.5])
-])
-
-def load_model(model_path):
-    model = ViTForImageClassification.from_pretrained(model_path)
-    model.eval()
-    return model
-
-def predict_image(model, image):
-    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-    model.to(device)
-    
-    # Preprocess the image
-    image_tensor = transform(image).unsqueeze(0).to(device)
-    
-    # Perform prediction
-    with torch.no_grad():
-        outputs = model(image_tensor)
-        logits = outputs.logits
-        probabilities = torch.nn.functional.softmax(logits, dim=1)[0]
-        
-    # Get prediction and confidence scores
-    confidence_scores = probabilities.cpu().numpy()
-    predicted_class = torch.argmax(probabilities).item()
-    
-    return predicted_class, confidence_scores
+# Rest of the code remains the same until the plot_confidence_scores function
 
 def plot_confidence_scores(confidence_scores):
     # Sort confidence scores and labels
@@ -124,41 +110,51 @@ def plot_confidence_scores(confidence_scores):
     sorted_scores = confidence_scores[sorted_indices]
     sorted_labels = [labels[i] for i in sorted_indices]
     
-    # Create horizontal bar chart using plotly
+    # Create horizontal bar chart with updated colors
     fig = go.Figure(go.Bar(
-        x=sorted_scores * 100,  # Convert to percentage
+        x=sorted_scores * 100,
         y=sorted_labels,
         orientation='h',
-        marker_color='rgba(108, 92, 231, 0.6)',
+        marker=dict(
+            color='rgba(192, 132, 252, 0.6)',
+            line=dict(color='rgba(168, 85, 247, 0.8)', width=1)
+        ),
         text=[f'{score:.1f}%' for score in sorted_scores * 100],
         textposition='auto',
     ))
     
     fig.update_layout(
-        title='Confidence Scores by Class',
+        title={
+            'text': 'Confidence Scores by Class',
+            'font': {'color': '#9333ea', 'size': 20}
+        },
         xaxis_title='Confidence (%)',
         yaxis_title='Class',
         height=400,
         margin=dict(l=20, r=20, t=40, b=20),
         paper_bgcolor='rgba(0,0,0,0)',
         plot_bgcolor='rgba(0,0,0,0)',
+        font=dict(color='#4b5563'),
+        xaxis=dict(gridcolor='rgba(192, 132, 252, 0.1)'),
+        yaxis=dict(gridcolor='rgba(192, 132, 252, 0.1)')
     )
     
     return fig
 
 def main():
-    # Header section
+    # Header section with updated styling
     st.title("🏌️ Golf Swing Phase Classifier")
     st.markdown("""
+    <div style='background: white; padding: 1.5rem; border-radius: 20px; box-shadow: 0 4px 6px rgba(192, 132, 252, 0.1); margin-bottom: 2rem;'>
     This application uses Vision Transformer (ViT) to classify different phases of a golf swing.
     Upload your golf swing image and get instant classification results!
-    """)
+    </div>
+    """, unsafe_allow_html=True)
     
     # Create two columns for layout
     col1, col2 = st.columns([1, 1])
     
     with col1:
-        # Model selection with custom styling
         st.markdown("### Model Selection")
         model_type = st.selectbox(
             "Choose your preferred model",
@@ -166,11 +162,9 @@ def main():
             help="Select the model architecture you want to use for classification"
         )
         
-        # Load selected model
         model_path = model_paths[model_type]
         model = load_model(model_path)
         
-        # File uploader with instructions
         st.markdown("### Upload Image")
         uploaded_file = st.file_uploader(
             "Choose a golf swing image (JPG, JPEG, PNG)",
@@ -178,40 +172,35 @@ def main():
             help="Upload a clear image of a golf swing"
         )
     
-    # Display and process image
     if uploaded_file is not None:
         with col1:
-            # Display uploaded image
             image = Image.open(uploaded_file).convert('RGB')
-            st.image(image, caption="Uploaded Image", use_container_width =True)
+            st.image(image, caption="Uploaded Image", use_container_width=True)
             
-            # Predict button
             if st.button("Classify Swing Phase"):
-                with st.spinner("Analyzing swing phase..."):
-                    # Get prediction and confidence scores
+                with st.spinner("✨ Analyzing swing phase..."):
                     predicted_class, confidence_scores = predict_image(model, image)
                     
-                    # Display results in col2
                     with col2:
                         st.markdown("### Classification Results")
                         st.markdown(f"""
                         <div class="prediction-box">
-                            <h3 style='color: #6c5ce7;'>Predicted Phase: {labels[predicted_class]}</h3>
-                            <p>Confidence: {confidence_scores[predicted_class]*100:.1f}%</p>
-                            <p>Analyzed on: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}</p>
+                            <h3 style='color: #a855f7; margin-bottom: 1rem;'>Predicted Phase: {labels[predicted_class]}</h3>
+                            <p style='font-size: 1.1rem; color: #6b7280;'>Confidence: <span style='color: #9333ea; font-weight: 600;'>{confidence_scores[predicted_class]*100:.1f}%</span></p>
+                            <p style='font-size: 0.9rem; color: #6b7280;'>Analyzed on: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}</p>
                         </div>
                         """, unsafe_allow_html=True)
                         
-                        # Display confidence scores plot
                         st.plotly_chart(plot_confidence_scores(confidence_scores), use_container_width=True)
                         
-                        # Display additional information
                         st.markdown("### About the Classification")
                         st.markdown("""
+                        <div style='background: white; padding: 1.5rem; border-radius: 20px; box-shadow: 0 4px 6px rgba(192, 132, 252, 0.1);'>
                         The confidence scores show the model's certainty level for each possible
                         swing phase. Higher percentages indicate greater confidence in that
                         particular classification.
-                        """)
+                        </div>
+                        """, unsafe_allow_html=True)
 
 if __name__ == "__main__":
     main()
