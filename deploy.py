@@ -258,7 +258,7 @@ def analyze_image(uploaded_file):
         image = Image.open(uploaded_file)
         st.image(image, caption="Uploaded Swing Image", use_column_width=True)
 
-        inputs = feature_extractor(image).unsqueeze(0).to(device)
+        inputs = feature_extractor(image).unsqueeze(0)
         with st.spinner("🔍 Analyzing swing phase..."):
             outputs = model(inputs)
             logits = outputs.logits
