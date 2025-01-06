@@ -18,59 +18,84 @@ st.set_page_config(
 # Custom CSS to improve appearance
 st.markdown("""
     <style>
+    /* Background styling */
     .main {
         padding: 2rem;
-        background-color: #f8f9fa;
+        background-color: #1f1f2e;  /* Dark blue-gray background */
     }
+
+    /* Button styling */
     .stButton>button {
         width: 100%;
-        background-color: #6c5ce7;
+        background-color: #ff6f61; /* Eye-catching coral orange */
         color: white;
         padding: 0.75rem;
         border-radius: 10px;
         border: none;
         font-size: 1rem;
         font-weight: bold;
-        transition: background-color 0.3s ease;
+        transition: background-color 0.3s ease, transform 0.2s ease;
     }
     .stButton>button:hover {
-        background-color: #5a4fcf;
+        background-color: #ff5042; /* Slightly darker orange */
+        transform: scale(1.02); /* Subtle hover effect */
     }
+
+    /* Prediction box styling */
     .prediction-box {
         padding: 1.5rem;
         border-radius: 10px;
-        background-color: #ffffff;
+        background-color: #25253c; /* Soft dark purple */
         margin: 1rem 0;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3); /* Slightly stronger shadow */
+        color: #ffffff; /* White text for contrast */
     }
+
+    /* Dropdown (Selectbox) styling */
     .stSelectbox>div>div>div>div {
-        background-color: #ffffff;
+        background-color: #3e3e5a;  /* Dark grayish-blue */
         border-radius: 10px;
         padding: 0.5rem;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        color: white; /* White text */
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5); /* Subtle shadow */
     }
+
+    /* File uploader styling */
     .stFileUploader>div>div>div>div {
-        background-color: #ffffff;
+        background-color: #3e3e5a; /* Dark grayish-blue */
         border-radius: 10px;
         padding: 0.5rem;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        color: white; /* White text */
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5); /* Subtle shadow */
     }
+
+    /* Section headers styling */
     .stMarkdown h3 {
-        color: #6c5ce7;
+        color: #ff6f61; /* Coral orange for headers */
+        font-weight: bold;
     }
+
+    /* Paragraph text styling */
     .stMarkdown p {
-        color: #333333;
+        color: #d3d3e7; /* Light grayish text for readability */
     }
+
+    /* Image styling */
     .stImage>img {
         border-radius: 10px;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3); /* Stronger shadow for emphasis */
     }
+
+    /* Plotly chart styling */
     .stPlotlyChart {
         border-radius: 10px;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3); /* Strong shadow */
+        background-color: #25253c; /* Dark purple */
+        padding: 1rem; /* Add some padding */
     }
     </style>
     """, unsafe_allow_html=True)
+
 
 # Set random seeds for reproducibility
 torch.manual_seed(42)
