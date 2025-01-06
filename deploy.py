@@ -245,9 +245,6 @@ def load_model(model_path):
               "Impact", "Mid-follow-through", "Finish"]
     model = ViTForImageClassification.from_pretrained(
         model_path,
-        num_labels=len(labels),
-        id2label={str(i): c for i, c in enumerate(labels)},
-        label2id={c: str(i) for i, c in enumerate(labels)},
     )
     return feature_extractor, model, labels
 
