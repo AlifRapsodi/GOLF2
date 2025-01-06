@@ -16,9 +16,9 @@ labels = ["Address", "Toe-up", "Mid-backswing", "Top", "Impact", "Mid-follow-thr
 
 # Load ViT model based on user selection
 model_paths = {
-    "Base": r"\src\base",
-    "Tiny": r"\src\tiny",
-    "Small": r"\src\small"
+    "Base": r"src/base",
+    "Tiny": r"src/tiny",
+    "Small": r"src/small"
 }
 
 # Define transform for single image
