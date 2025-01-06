@@ -247,7 +247,7 @@ def load_model(model_path):
     ])
     labels = ["Address", "Toe-up", "Mid-backswing", "Top", "Mid-downswing",
               "Impact", "Mid-follow-through", "Finish"]
-    model = ViTForImageClassification.from_pretrained(model_path)
+    model = ViTForImageClassification.from_pretrained(model_path, ignore_mismatched_sizes=True)
     return feature_extractor, model, labels
 
 feature_extractor, model, labels = load_model(model_path)
