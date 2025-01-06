@@ -141,7 +141,7 @@ def plot_confidence_scores(confidence_scores):
         height=400,
         margin=dict(l=20, r=20, t=40, b=20),
         paper_bgcolor='rgba(0,0,0,0)',
-        plot_bgcolor='rgba(128,128,128,1)',
+        plot_bgcolor='rgba(0,0,0,0)',
     )
     
     return fig
