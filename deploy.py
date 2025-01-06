@@ -5,6 +5,41 @@ from transformers import ViTForImageClassification
 from PIL import Image
 import numpy as np
 import random
+import plotly.graph_objects as go
+from datetime import datetime
+
+# Set page config for better appearance
+st.set_page_config(
+    page_title="Golf Swing Classifier",
+    page_icon="🏌️",
+    layout="wide"
+)
+
+# Custom CSS to improve appearance
+st.markdown("""
+    <style>
+    .main {
+        padding: 2rem;
+    }
+    .stButton>button {
+        width: 100%;
+        background-color: #4CAF50;
+        color: white;
+        padding: 0.5rem;
+        border-radius: 5px;
+        border: none;
+    }
+    .stButton>button:hover {
+        background-color: #45a049;
+    }
+    .prediction-box {
+        padding: 1rem;
+        border-radius: 5px;
+        background-color: #f0f2f6;
+        margin: 1rem 0;
+    }
+    </style>
+    """, unsafe_allow_html=True)
 
 # Set random seeds for reproducibility
 torch.manual_seed(42)
@@ -23,99 +58,124 @@ model_paths = {
 
 # Define transform for single image
 transform = transforms.Compose([
-    transforms.Resize((224, 224)),  # Assuming input size is 224x224
+    transforms.Resize((224, 224)),
     transforms.ToTensor(),
     transforms.Normalize(mean=[0.5, 0.5, 0.5], std=[0.5, 0.5, 0.5])
 ])
 
-# Function to load model
 def load_model(model_path):
     model = ViTForImageClassification.from_pretrained(model_path)
     model.eval()
     return model
 
-# Function to predict a single image
 def predict_image(model, image):
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     model.to(device)
-
+    
     # Preprocess the image
-    image = transform(image).unsqueeze(0).to(device)
-
+    image_tensor = transform(image).unsqueeze(0).to(device)
+    
     # Perform prediction
     with torch.no_grad():
-        outputs = model(image)
-        logits = outputs.logits  # Access the logits
-        probs = torch.nn.functional.softmax(logits, dim=-1)
-        _, predicted = torch.max(logits, 1)
+        outputs = model(image_tensor)
+        logits = outputs.logits
+        probabilities = torch.nn.functional.softmax(logits, dim=1)[0]
+        
+    # Get prediction and confidence scores
+    confidence_scores = probabilities.cpu().numpy()
+    predicted_class = torch.argmax(probabilities).item()
+    
+    return predicted_class, confidence_scores
 
-    return labels[predicted.item()], probs.cpu().numpy()[0]
+def plot_confidence_scores(confidence_scores):
+    # Create horizontal bar chart using plotly
+    fig = go.Figure(go.Bar(
+        x=confidence_scores * 100,  # Convert to percentage
+        y=labels,
+        orientation='h',
+        marker_color='rgba(76, 175, 80, 0.6)',
+        text=[f'{score:.1f}%' for score in confidence_scores * 100],
+        textposition='auto',
+    ))
+    
+    fig.update_layout(
+        title='Confidence Scores by Class',
+        xaxis_title='Confidence (%)',
+        yaxis_title='Class',
+        height=400,
+        margin=dict(l=20, r=20, t=40, b=20),
+        paper_bgcolor='rgba(0,0,0,0)',
+        plot_bgcolor='rgba(0,0,0,0)',
+    )
+    
+    return fig
 
-# Streamlit app
 def main():
-    st.set_page_config(page_title="ViT Image Classification App", page_icon=":camera:", layout="wide")
-
-    # Custom CSS
+    # Header section
+    st.title("🏌️ Golf Swing Phase Classifier")
     st.markdown("""
-        <style>
-            .stApp {
-                background-color: #f0f2f6;
-            }
-            .stButton>button {
-                background-color: #4CAF50;
-                color: white;
-                font-size: 16px;
-                padding: 10px 24px;
-                border-radius: 8px;
-                border: none;
-            }
-            .stButton>button:hover {
-                background-color: #45a049;
-            }
-            .stFileUploader>div>div>div>div {
-                background-color: #ffffff;
-                border-radius: 8px;
-                padding: 20px;
-            }
-            .stMarkdown h1 {
-                color: #4CAF50;
-            }
-            .stMarkdown h2 {
-                color: #4CAF50;
-            }
-        </style>
-    """, unsafe_allow_html=True)
-
-    st.title("ViT Image Classification App")
-    st.write("Upload an image and the model will classify it into one of the predefined categories.")
-
-    # Model selection
-    model_type = st.selectbox("Select Model Type", ["Base", "Tiny", "Small"])
-    model_path = model_paths[model_type]
-    model = load_model(model_path)
-
-    # File uploader
-    uploaded_file = st.file_uploader("Choose an image file", type=["jpg", "jpeg", "png"])
-
+    This application uses Vision Transformer (ViT) to classify different phases of a golf swing.
+    Upload your golf swing image and get instant classification results!
+    """)
+    
+    # Create two columns for layout
+    col1, col2 = st.columns([1, 1])
+    
+    with col1:
+        # Model selection with custom styling
+        st.markdown("### Model Selection")
+        model_type = st.selectbox(
+            "Choose your preferred model",
+            ["Base", "Tiny", "Small"],
+            help="Select the model architecture you want to use for classification"
+        )
+        
+        # Load selected model
+        model_path = model_paths[model_type]
+        model = load_model(model_path)
+        
+        # File uploader with instructions
+        st.markdown("### Upload Image")
+        uploaded_file = st.file_uploader(
+            "Choose a golf swing image (JPG, JPEG, PNG)",
+            type=["jpg", "jpeg", "png"],
+            help="Upload a clear image of a golf swing"
+        )
+    
+    # Display and process image
     if uploaded_file is not None:
-        # Display the uploaded image
-        image = Image.open(uploaded_file).convert('RGB')
-        st.image(image, caption="Uploaded Image", use_container_width=True)
-
-        # Predict button
-        if st.button("Predict"):
-            with st.spinner("Classifying..."):
-                prediction, probs = predict_image(model, image)
-            st.success(f"Predicted class: **{prediction}**")
-
-            # Display probabilities
-            st.subheader("Prediction Probabilities")
-            for label, prob in zip(labels, probs):
-                st.write(f"{label}: {prob:.4f}")
-
-            # Visualize probabilities
-            st.subheader("Probability Distribution")
-            st.bar_chart(dict(zip(labels, probs)))
+        with col1:
+            # Display uploaded image
+            image = Image.open(uploaded_file).convert('RGB')
+            st.image(image, caption="Uploaded Image", use_column_width=True)
+            
+            # Predict button
+            if st.button("Classify Swing Phase"):
+                with st.spinner("Analyzing swing phase..."):
+                    # Get prediction and confidence scores
+                    predicted_class, confidence_scores = predict_image(model, image)
+                    
+                    # Display results in col2
+                    with col2:
+                        st.markdown("### Classification Results")
+                        st.markdown(f"""
+                        <div class="prediction-box">
+                            <h3 style='color: #4CAF50;'>Predicted Phase: {labels[predicted_class]}</h3>
+                            <p>Confidence: {confidence_scores[predicted_class]*100:.1f}%</p>
+                            <p>Analyzed on: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}</p>
+                        </div>
+                        """, unsafe_allow_html=True)
+                        
+                        # Display confidence scores plot
+                        st.plotly_chart(plot_confidence_scores(confidence_scores), use_container_width=True)
+                        
+                        # Display additional information
+                        st.markdown("### About the Classification")
+                        st.markdown("""
+                        The confidence scores show the model's certainty level for each possible
+                        swing phase. Higher percentages indicate greater confidence in that
+                        particular classification.
+                        """)
 
 if __name__ == "__main__":
     main()
