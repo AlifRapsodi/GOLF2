@@ -1,7 +1,7 @@
 # File: golf_swing_analyzer.py
 
 import streamlit as st
-from transformers import ViTFeatureExtractor, ViTForImageClassification
+from transformers import ViTFeatureExtractor, ViTForImageClassification, ViTConfig
 
 from PIL import Image
 import torch
