@@ -263,7 +263,7 @@ def analyze_image(uploaded_file):
             outputs = model(inputs)
             logits = outputs.logits
             probs = torch.nn.functional.softmax(logits, dim=-1)
-            predicted_class_idx = torch.argmax(logits, dim=-1).item()
+            _, predicted_class_idx = torch.max(logits, 1)
             predicted_label = labels[predicted_class_idx]
             confidence = probs[0][predicted_class_idx].item()
 
