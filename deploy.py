@@ -254,21 +254,36 @@ feature_extractor, model, labels = load_model(model_path)
 
 # Image Upload and Analysis
 def analyze_image(uploaded_file):
-    if uploaded_file:
-        image = Image.open(uploaded_file)
-        st.image(image, caption="Uploaded Swing Image", use_column_width=True)
-
-        inputs = feature_extractor(image).unsqueeze(0)
-        with st.spinner("🔍 Analyzing swing phase..."):
-            outputs = model(inputs)
-            logits = outputs.logits
-            probs = torch.nn.functional.softmax(logits, dim=-1)
-            _, predicted_class_idx = torch.max(logits, 1)
-            predicted_label = labels[predicted_class_idx]
-            confidence = probs[0][predicted_class_idx].item()
-
-        display_results(predicted_label, confidence, probs)
-        display_confidence_scores(labels, probs)
+    # Buka gambar yang diunggah
+    image = Image.open(uploaded_file).convert('RGB')
+    
+    # Preprocess gambar menggunakan feature extractor
+    inputs = feature_extractor(image).unsqueeze(0)
+    
+    # Pindahkan input ke perangkat yang sesuai (CPU atau GPU)
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    inputs = inputs.to(device)
+    model.to(device)
+    
+    # Lakukan prediksi
+    with torch.no_grad():
+        outputs = model(inputs)
+        logits = outputs.logits  # Ambil logits dari output model
+        probs = torch.nn.functional.softmax(logits, dim=-1)  # Hitung probabilitas
+        confidence, predicted = torch.max(probs, 1)  # Ambil nilai confidence dan prediksi
+    
+    # Ambil label prediksi dan nilai confidence
+    predicted_label = labels[predicted.item()]
+    confidence_value = confidence.item()
+    
+    # Tampilkan hasil prediksi
+    display_results(predicted_label, confidence_value, probs)
+    
+    # Tampilkan skor confidence untuk semua label
+    display_confidence_scores(labels, probs)
+    
+    # Tampilkan tips berdasarkan fase swing yang terdeteksi
+    display_swing_tips(predicted_label)
 
 def display_results(predicted_label, confidence, probs):
     st.markdown(f"""
