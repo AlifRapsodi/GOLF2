@@ -2,6 +2,7 @@
 
 import streamlit as st
 from transformers import ViTFeatureExtractor, ViTForImageClassification
+
 from PIL import Image
 import torch
 from torchvision import transforms
@@ -247,7 +248,8 @@ def load_model(model_path):
     ])
     labels = ["Address", "Toe-up", "Mid-backswing", "Top",
               "Impact", "Mid-follow-through", "Finish"]
-    model = ViTForImageClassification.from_pretrained(model_path)
+    loaded_config = ViTConfig.from_pretrained(model_path)
+    model = ViTForImageClassification.from_pretrained(model_path, config=loaded_config)
     return feature_extractor, model, labels
 
 feature_extractor, model, labels = load_model(model_path)
