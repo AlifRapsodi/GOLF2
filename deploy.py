@@ -4,6 +4,7 @@ import streamlit as st
 from transformers import ViTFeatureExtractor, ViTForImageClassification
 from PIL import Image
 import torch
+from torchvision import transforms
 
 # Page Configuration
 st.set_page_config(
