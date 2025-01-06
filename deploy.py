@@ -283,7 +283,6 @@ def analyze_image(uploaded_file):
     display_confidence_scores(labels, probs)
     
     # Tampilkan tips berdasarkan fase swing yang terdeteksi
-    display_swing_tips(predicted_label)
 
 def display_results(predicted_label, confidence, probs):
     st.markdown(f"""
