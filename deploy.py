@@ -5,8 +5,6 @@ from transformers import ViTFeatureExtractor, ViTForImageClassification
 from PIL import Image
 import torch
 
-# set KMP_DUPLICATE_LIB_OK=True
-
 # Page Configuration
 st.set_page_config(
     page_title="Golf Swing Analyzer Pro",
@@ -216,6 +214,7 @@ def setup_sidebar():
                 <p style="font-size: 0.9rem;">Version 2.0</p>
             </div>
         """, unsafe_allow_html=True)
+
 setup_sidebar()
 
 # Main Title
@@ -231,21 +230,23 @@ display_main_title()
 
 model_select = st.selectbox("Select a model", ["Tiny", "Small", "Base"])
 if model_select == "Tiny":
-    model_path = r"src/tiny"
+    model_path = r"E:\\rapsodi\\Tiny-result\\checkpoint-4800"
 elif model_select == "Small":
-    model_path = r"src/small"
+    model_path = r"E:\\rapsodi\\Tiny-result\\checkpoint-4800"
 elif model_select == "Base":
-    model_path = r"src/base"
+    model_path = r"E:\\rapsodi\\Tiny-result\\checkpoint-4800"
 
 # Load Model and Labels
 @st.cache_resource
 def load_model(model_path):
-    feature_extractor = ViTFeatureExtractor.from_pretrained(model_path)
-    labels = ["Address", "Toe-up", "Mid-backswing", "Top",
+    feature_extractor = transforms.Compose([
+        transforms.Resize((224, 224)),  # Assuming input size is 224x224
+        transforms.ToTensor(),
+        transforms.Normalize(mean=[0.5, 0.5, 0.5], std=[0.5, 0.5, 0.5])
+    ])
+    labels = ["Address", "Toe-up", "Mid-backswing", "Top", "Mid-downswing",
               "Impact", "Mid-follow-through", "Finish"]
-    model = ViTForImageClassification.from_pretrained(
-        model_path,
-    )
+    model = ViTForImageClassification.from_pretrained(model_path)
     return feature_extractor, model, labels
 
 feature_extractor, model, labels = load_model(model_path)
@@ -256,9 +257,9 @@ def analyze_image(uploaded_file):
         image = Image.open(uploaded_file)
         st.image(image, caption="Uploaded Swing Image", use_column_width=True)
 
-        inputs = feature_extractor(images=image, return_tensors="pt")
+        inputs = feature_extractor(image).unsqueeze(0).to(device)
         with st.spinner("🔍 Analyzing swing phase..."):
-            outputs = model(**inputs)
+            outputs = model(inputs)
             logits = outputs.logits
             probs = torch.nn.functional.softmax(logits, dim=-1)
             predicted_class_idx = torch.argmax(logits, dim=-1).item()
