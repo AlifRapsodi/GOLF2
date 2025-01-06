@@ -18,83 +18,91 @@ st.set_page_config(
 # Custom CSS to improve appearance
 st.markdown("""
     <style>
-    /* Background styling */
+    /* Background: Aurora Gradient */
     .main {
         padding: 2rem;
-        background-color: #1f1f2e;  /* Dark blue-gray background */
+        background: linear-gradient(135deg, #6a11cb, #2575fc); /* Aurora Gradient */
+        color: white; /* Set text color to white for contrast */
     }
 
-    /* Button styling */
+    /* Buttons with Aurora Style */
     .stButton>button {
         width: 100%;
-        background-color: #ff6f61; /* Eye-catching coral orange */
+        background: linear-gradient(90deg, #ff6a00, #ee0979);
         color: white;
         padding: 0.75rem;
-        border-radius: 10px;
+        border-radius: 12px;
         border: none;
         font-size: 1rem;
         font-weight: bold;
-        transition: background-color 0.3s ease, transform 0.2s ease;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+        transition: all 0.3s ease-in-out;
     }
     .stButton>button:hover {
-        background-color: #ff5042; /* Slightly darker orange */
-        transform: scale(1.02); /* Subtle hover effect */
+        background: linear-gradient(90deg, #ee0979, #ff6a00);
+        transform: scale(1.05); /* Slight zoom effect */
     }
 
-    /* Prediction box styling */
+    /* Prediction Box */
     .prediction-box {
         padding: 1.5rem;
-        border-radius: 10px;
-        background-color: #25253c; /* Soft dark purple */
+        border-radius: 12px;
+        background: linear-gradient(135deg, #6a11cb, #2575fc); /* Aurora Gradient */
+        color: white;
         margin: 1rem 0;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3); /* Slightly stronger shadow */
-        color: #ffffff; /* White text for contrast */
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4);
     }
 
-    /* Dropdown (Selectbox) styling */
+    /* Selectbox */
     .stSelectbox>div>div>div>div {
-        background-color: #3e3e5a;  /* Dark grayish-blue */
-        border-radius: 10px;
+        background: linear-gradient(135deg, #36d1dc, #5b86e5); /* Blue Aurora Gradient */
+        color: white;
+        border-radius: 12px;
         padding: 0.5rem;
-        color: white; /* White text */
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5); /* Subtle shadow */
-    }
-
-    /* File uploader styling */
-    .stFileUploader>div>div>div>div {
-        background-color: #3e3e5a; /* Dark grayish-blue */
-        border-radius: 10px;
-        padding: 0.5rem;
-        color: white; /* White text */
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5); /* Subtle shadow */
-    }
-
-    /* Section headers styling */
-    .stMarkdown h3 {
-        color: #ff6f61; /* Coral orange for headers */
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.4);
         font-weight: bold;
     }
 
-    /* Paragraph text styling */
+    /* File Uploader */
+    .stFileUploader>div>div>div>div {
+        background: linear-gradient(135deg, #ff5f6d, #ffc371); /* Warm Aurora Gradient */
+        color: white;
+        border-radius: 12px;
+        padding: 0.5rem;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.4);
+        font-weight: bold;
+    }
+
+    /* Headings */
+    .stMarkdown h3 {
+        color: #ffd700; /* Vibrant gold */
+    }
+
+    /* Paragraphs */
     .stMarkdown p {
-        color: #d3d3e7; /* Light grayish text for readability */
+        color: #f8f9fa;
     }
 
-    /* Image styling */
+    /* Images */
     .stImage>img {
-        border-radius: 10px;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3); /* Stronger shadow for emphasis */
+        border-radius: 12px;
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4);
+        transition: transform 0.3s ease;
+    }
+    .stImage>img:hover {
+        transform: scale(1.05); /* Zoom effect */
     }
 
-    /* Plotly chart styling */
+    /* Plotly Chart */
     .stPlotlyChart {
-        border-radius: 10px;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3); /* Strong shadow */
-        background-color: #25253c; /* Dark purple */
-        padding: 1rem; /* Add some padding */
+        border-radius: 12px;
+        background: linear-gradient(135deg, #36d1dc, #5b86e5); /* Blue Aurora Gradient */
+        padding: 1rem;
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4);
     }
     </style>
     """, unsafe_allow_html=True)
+
 
 
 # Set random seeds for reproducibility
