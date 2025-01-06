@@ -170,7 +170,7 @@ def main():
         with col1:
             # Display uploaded image
             image = Image.open(uploaded_file).convert('RGB')
-            st.image(image, caption="Uploaded Image", use_column_width=True)
+            st.image(image, caption="Uploaded Image", use_container_width =True)
             
             # Predict button
             if st.button("Classify Swing Phase"):
