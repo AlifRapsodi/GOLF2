@@ -243,11 +243,11 @@ def load_model(model_path):
     feature_extractor = transforms.Compose([
         transforms.Resize((224, 224)),  # Assuming input size is 224x224
         transforms.ToTensor(),
-        transforms.Normalize(mean=[0.5, 0.5, 0.5], std=[0.5, 0.5, 0.5])
+        transforms.Normalize(mean=[ 0.485, 0.456, 0.406], std=[0.229,0.224,0.225])
     ])
-    labels = ["Address", "Toe-up", "Mid-backswing", "Top", "Mid-downswing",
+    labels = ["Address", "Toe-up", "Mid-backswing", "Top",
               "Impact", "Mid-follow-through", "Finish"]
-    model = ViTForImageClassification.from_pretrained(model_path, ignore_mismatched_sizes=True)
+    model = ViTForImageClassification.from_pretrained(model_path, num_labels = len(labels))
     return feature_extractor, model, labels
 
 feature_extractor, model, labels = load_model(model_path)
