@@ -111,13 +111,18 @@ def predict_image(model, image):
     return predicted_class, confidence_scores
 
 def plot_confidence_scores(confidence_scores):
+    # Sort confidence scores and labels
+    sorted_indices = np.argsort(confidence_scores)[::-1]
+    sorted_scores = confidence_scores[sorted_indices]
+    sorted_labels = [labels[i] for i in sorted_indices]
+    
     # Create horizontal bar chart using plotly
     fig = go.Figure(go.Bar(
-        x=confidence_scores * 100,  # Convert to percentage
-        y=labels,
+        x=sorted_scores * 100,  # Convert to percentage
+        y=sorted_labels,
         orientation='h',
         marker_color='rgba(108, 92, 231, 0.6)',
-        text=[f'{score:.1f}%' for score in confidence_scores * 100],
+        text=[f'{score:.1f}%' for score in sorted_scores * 100],
         textposition='auto',
     ))
     
