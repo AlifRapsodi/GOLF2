@@ -55,7 +55,7 @@ st.markdown("""
 
     /* Selectbox */
     .stSelectbox>div>div>div>div {
-        background: linear-gradient(135deg, #36d1dc, #5b86e5); /* Blue Aurora Gradient */
+        background: linear-gradient(135deg, #ff5f6d, #ffc371); /* Blue Aurora Gradient */
         border-radius: 12px;
         padding: 0.5rem;
         box-shadow: 0 4px 6px rgba(0, 0, 0, 0.4);
