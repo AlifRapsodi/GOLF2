@@ -95,7 +95,7 @@ st.markdown("""
     /* Plotly Chart */
     .stPlotlyChart {
         border-radius: 12px;
-        background: linear-gradient(135deg, #36d1dc, #5b86e5); /* Blue Aurora Gradient */
+        background: linear-gradient(135deg, #ff5f6d, #ffc371); /* Blue Aurora Gradient */
         padding: 1rem;
         box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4);
     }
