@@ -47,7 +47,7 @@ st.markdown("""
     .prediction-box {
         padding: 1.5rem;
         border-radius: 12px;
-        background: linear-gradient(135deg, #6a11cb, #2575fc); /* Aurora Gradient */
+        background: linear-gradient(135deg, #ff5f6d, #ffc371); /* Aurora Gradient */
         color: white;
         margin: 1rem 0;
         box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4);
